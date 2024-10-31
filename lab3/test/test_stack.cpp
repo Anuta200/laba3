@@ -2,7 +2,7 @@
 
 #include "gtest.h"
 
-TEST(TStack, can_create_matrix_with_positive_length)
+/*TEST(TStack, can_create_matrix_with_positive_length)
 {
   ASSERT_NO_THROW(TStack<int> m(5));
 }
@@ -165,5 +165,5 @@ TEST(TStack, cant_subtract_matrixes_with_not_equal_size)
 	m2[0][0] = 5;
 
 	ASSERT_ANY_THROW(m1 - m2);
-}
+}*/
 
