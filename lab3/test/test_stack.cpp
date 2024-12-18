@@ -1,169 +1,253 @@
 #include "../lab3/stack.h"
 
 #include "gtest.h"
+			
 
-/*TEST(TStack, can_create_matrix_with_positive_length)
-{
-  ASSERT_NO_THROW(TStack<int> m(5));
+
+
+TEST(TStack, can_create_stack_with_positive_size) {
+    ASSERT_NO_THROW(TStack<int> stack(5));
 }
 
-TEST(TStack, cant_create_too_large_matrix)
-{
-  ASSERT_ANY_THROW(TStack<int> m(MAX_MATRIX_SIZE + 1));
+TEST(TStack, throws_when_creating_stack_with_invalid_size) {
+    ASSERT_ANY_THROW(TStack<int> stack(-5)); 
+    ASSERT_ANY_THROW(TStack<int> stack(0)); 
 }
 
-TEST(TStack, throws_when_create_matrix_with_negative_length)
-{
-  ASSERT_ANY_THROW(TStack<int> m(-5));
+TEST(TStack, can_push_and_pop_elements) {
+    TStack<int> stack(3);
+    stack.Push(10);
+    stack.Push(20);
+
+    EXPECT_EQ(20, stack.Pop());
+    EXPECT_EQ(10, stack.Pop());
 }
 
-TEST(TStack, can_create_copied_matrix)
-{
-  TStack<int> m(5);
 
-  ASSERT_NO_THROW(TStack<int> m1(m));
+TEST(TStack, throws_when_popping_from_empty_stack) {
+    TStack<int> stack(3);
+    ASSERT_ANY_THROW(stack.Pop());
 }
 
-TEST(TStack, copied_matrix_is_equal_to_source_one)
-{
-	TStack<int> m1(5);
-	for (int i = 0; i < 5; i++)
-	{
-		m1[i][i] = i + 1;
-	}
 
-	TStack<int> m2(m1);
-	EXPECT_EQ(m1, m2);
+TEST(TStack, empty_returns_true_for_new_stack) {
+    TStack<int> stack(3);
+    EXPECT_TRUE(stack.isEmpty());
 }
 
-TEST(TStack, copied_matrix_has_its_own_memory)
-{
-	TStack<int> m1(5), m2(5);
 
-	EXPECT_NE(&m1[0][0], &m2[0][0]);
+TEST(TStack, can_peek_top_element) {
+    TStack<int> stack(3);
+    stack.Push(10);
+    stack.Push(20);
+
+    EXPECT_EQ(20, stack.getTop());
+    EXPECT_EQ(20, stack.getTop());
 }
 
-TEST(TStack, can_get_size)
-{
-	TStack<int> m(5);
-	EXPECT_EQ(5, m.GetSize());
+TEST(TStack, throws_when_peeking_into_empty_stack) {
+    TStack<int> stack(3);
+    ASSERT_ANY_THROW(stack.getTop());
 }
 
-TEST(TStack, can_set_and_get_element)
-{
-	TStack<int> m(5);
-	int b = 10;
-	m[2][3] = b;
 
-	EXPECT_EQ(b, m[2][3]);
+TEST(TStack, can_clear_stack) {
+    TStack<int> stack(3);
+    stack.Push(10);
+    stack.Push(20);
+
+    stack.Clear();
+
+    EXPECT_TRUE(stack.isEmpty());
+    ASSERT_ANY_THROW(stack.Pop());
 }
 
-TEST(TStack, throws_when_set_element_with_negative_index)
-{
-	TStack<int> m(5);
 
-	ASSERT_ANY_THROW(m[-1][-1] = 1);
+TEST(TStack, can_create_copied_stack) {
+    TStack<int> stack(3);
+    stack.Push(10);
+    stack.Push(20);
+
+    ASSERT_NO_THROW(TStack<int> copiedStack(stack));
 }
 
-TEST(TStack, throws_when_set_element_with_too_large_index)
-{
-	TStack<int> m(5);
+TEST(TStack, copied_stack_is_equal_to_source) {
+    TStack<int> stack(3);
+    stack.Push(10);
+    stack.Push(20);
 
-	ASSERT_ANY_THROW(m[5][5] = 1);
+    TStack<int> copiedStack(stack);
+
+    EXPECT_EQ(copiedStack.Pop(), 20);
+    EXPECT_EQ(copiedStack.Pop(), 10);
 }
 
-TEST(TStack, can_assign_matrix_to_itself)
-{
-	TStack<int> m1(5);
-	TStack<int> m2(m1);
-	m1 = m1;
 
-	EXPECT_EQ(m1, m2);
+TEST(TStack, can_assign_stack_to_itself) {
+    TStack<int> stack(5);
+    stack.Push(10);
+    stack.Push(20);
+
+    stack = stack;
+
+    EXPECT_FALSE(stack.isEmpty());
+    EXPECT_EQ(20, stack.Pop());
+    EXPECT_EQ(10, stack.Pop());
 }
 
-TEST(TStack, can_assign_matrices_of_equal_size)
-{
-	TStack<int> m1(5);
-	TStack<int> m2(5);
-	m2 = m1;
+TEST(TStack, can_assign_stacks_of_equal_size) {
+    TStack<int> stack1(5);
+    stack1.Push(10);
+    stack1.Push(20);
 
-	EXPECT_EQ(m1, m2);
+    TStack<int> stack2(5);
+    stack2 = stack1;
+
+    EXPECT_FALSE(stack2.isEmpty());
+    EXPECT_EQ(stack2.Pop(), 20);
+    EXPECT_EQ(stack2.Pop(), 10);
 }
 
-TEST(TStack, assign_operator_change_matrix_size)
-{
-	TStack<int> m1(5);
-	TStack<int> m2(4);
-	m2 = m1;
+TEST(TStack, can_assign_stacks_of_different_size) {
+    TStack<int> stack1(5);
+    stack1.Push(10);
+    stack1.Push(20);
 
-	EXPECT_EQ(5, m2.GetSize());
+    TStack<int> stack2(3);
+    stack2 = stack1;
+
+    EXPECT_EQ(stack2.Pop(), 20);
+    EXPECT_EQ(stack2.Pop(), 10);
 }
 
-TEST(TStack, can_assign_matrices_of_different_size)
-{
-	TStack<int> m1(5);
-	TStack<int> m2(4);
-	m2 = m1;
 
-	EXPECT_EQ(m1, m2);
+TEST(TStack, compare_equal_stacks_return_true) {
+    TStack<int> stack1(3);
+    stack1.Push(10);
+    stack1.Push(20);
+
+    TStack<int> stack2(3);
+    stack2.Push(10);
+    stack2.Push(20);
+
+    EXPECT_TRUE(stack1 == stack2);
 }
 
-TEST(TStack, compare_equal_matrices_return_true)
-{
-	TStack<int> m1(5), m2(5);
+TEST(TStack, stacks_with_different_sizes_are_not_equal) {
+    TStack<int> stack1(3);
+    stack1.Push(10);
+    stack1.Push(20);
 
-	EXPECT_EQ(true, m1 == m2);
+    TStack<int> stack2(2);
+    stack2.Push(10);
+
+    EXPECT_FALSE(stack1 == stack2);
 }
 
-TEST(TStack, compare_matrix_with_itself_return_true)
-{
-	TStack<int> m1(5);
 
-	EXPECT_EQ(true, m1 == m1);
+
+//---------------------------------------------------------------------------------------------
+
+TEST(TCalc, can_set_and_get_infix_expression) {
+    TCalc calc;
+    calc.SetInfix("3 + 5");
+
+    EXPECT_EQ("3 + 5", calc.GetInfix());
 }
 
-TEST(TStack, matrices_with_different_size_are_not_equal)
-{
-	TStack<int> m1(5), m2(4);
+TEST(TCalc, can_not_create_wrong_postfix) {
+    TCalc calc;
+    calc.SetInfix("3 + 5))"); 
 
-	EXPECT_EQ(false, m1 == m2);
+    ASSERT_ANY_THROW(calc.ToPostfix());
 }
 
-TEST(TStack, can_add_matrices_with_equal_size)
-{
-	TStack<int> m1(1), m2(5), m3(5);
-	m1[0][0] = 5;
-	m2[0][0] = 5;
-	m3[0][0] = m2[0][0]+ m1[0][0];
+TEST(TCalc, can_convert_simple_expression_to_postfix) {
+    TCalc calc;
+    calc.SetInfix("3 + 5");
+    calc.ToPostfix();
 
-	EXPECT_EQ(m3[0][0], 10);
+    EXPECT_EQ("3 5 + ", calc.GetPostfix());
 }
 
-TEST(TStack, cant_add_matrices_with_not_equal_size)
-{
-	TStack<int> m1(5), m2(4);
-	m1[0][0] = 5;
-	m2[0][0] = 5;
+TEST(TCalc, can_subtract_numbers) {
+    TCalc calc;
+    calc.SetInfix("10 - 4");
+    double result = calc.Calc();
 
-	ASSERT_ANY_THROW(m1 + m2);
+    EXPECT_EQ(6, result);
 }
 
-TEST(TStack, can_subtract_matrices_with_equal_size)
-{
-	TStack<int> m1(5), m2(5), m3(5);
-	m1[0][0] = 5;
-	m2[0][0] = 15;
-	m3[0][0] = m2[0][0] - m1[0][0];
+TEST(TCalc, can_multiply_numbers) {
+    TCalc calc;
+    calc.SetInfix("3 * 5");
+    double result = calc.Calc();
 
-	EXPECT_EQ(m3[0][0], 10);
+    EXPECT_EQ(15, result);
 }
 
-TEST(TStack, cant_subtract_matrixes_with_not_equal_size)
-{
-	TStack<int> m1(5), m2(4);
-	m1[0][0] = 5;
-	m2[0][0] = 5;
+TEST(TCalc, can_divide_numbers) {
+    TCalc calc;
+    calc.SetInfix("15 / 3");
+    double result = calc.Calc();
 
-	ASSERT_ANY_THROW(m1 - m2);
-}*/
+    EXPECT_EQ(5, result);
+}
 
+TEST(TCalc, can_convert_expression_with_parentheses_to_postfix) {
+    TCalc calc;
+    calc.SetInfix("(3 + 5) * 2");
+    calc.ToPostfix();
+
+    EXPECT_EQ("3 5 + 2 * ", calc.GetPostfix());
+}
+
+TEST(TCalc, can_evaluate_simple_expression) {
+    TCalc calc;
+    calc.SetInfix("3 + 5");
+    double result = calc.Calc();
+
+    EXPECT_EQ(8, result);
+}
+
+TEST(TCalc, can_evaluate_expression_with_parentheses) {
+    TCalc calc;
+    calc.SetInfix("(3 + 5) * 2");
+    double result = calc.Calc();
+
+    EXPECT_EQ(16, result);
+}
+
+TEST(TCalc, can_handle_unary_minus) {
+    TCalc calc;
+    calc.SetInfix("-3 + 5");
+    double result = calc.Calc();
+
+    EXPECT_EQ(2, result);
+}
+
+
+
+TEST(TCalc, can_evaluate_expression_with_exponentiation) {
+    TCalc calc;
+    calc.SetInfix("2 ^ 3");
+    double result = calc.Calc();
+
+    EXPECT_EQ(8, result);
+}
+
+TEST(TCalc, throws_on_invalid_expression) {
+    TCalc calc;
+    calc.SetInfix("3 + * 5");
+
+    ASSERT_ANY_THROW(calc.Calc());
+}
+
+TEST(TCalc, can_evaluate_nested_parentheses) {
+    TCalc calc;
+    calc.SetInfix("(9 + 56 * (7 - 7 / 4)* (77 + 1 * 8 - (3 + 4)))");
+    double result = calc.Calc();
+    double a = 9 + 56 * (7 - 7.0 / 4.0) * (77 + 1 * 8 - (3 + 4));
+
+    EXPECT_EQ(a, result);
+}
